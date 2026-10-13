@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="landing-hero">
+    <h1>About <span>FetalBrain AI</span></h1>
+    <p>
+        A deep learning system built to assist in detecting fetal brain abnormalities
+        from ultrasound images with state-of-the-art accuracy.
+    </p>
+</div>
+
+<!-- MISSION -->
+<div class="row g-4 mb-5 justify-content-center">
+    <div class="col-lg-8">
+        <div class="feature-card grad-border reveal" data-spotlight data-tilt>
+            <h5>Our Mission</h5>
+            <p>
+                Early and accurate detection of fetal brain conditions is critical for timely
+                intervention. FetalBrain AI applies a fine-tuned Swin Transformer vision model to
+                ultrasound scans, classifying them into 15 conditions with
+                <strong>98.70% validation accuracy</strong> — helping healthcare professionals
+                make faster, more confident decisions.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- KEY FEATURES -->
+<h3 class="section-title">What We Offer</h3>
+<p class="section-sub">Powerful, accessible and clinically relevant AI tools</p>
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="feature-card grad-border reveal" data-spotlight data-tilt>
+            <div class="feature-icon">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+            </div>
+            <h5>Accurate Detection</h5>
+            <p>98.70% validation accuracy across 15 fetal brain conditions from a single ultrasound scan.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="feature-card grad-border reveal" data-spotlight data-tilt>
+            <div class="feature-icon">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                </svg>
+            </div>
+            <h5>Fast Analysis</h5>
+            <p>Instant classification with confidence scores, straight from the uploaded ultrasound image.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="feature-card grad-border reveal" data-spotlight data-tilt>
+            <div class="feature-icon">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+            </div>
+            <h5>Privacy Focused</h5>
+            <p>Uploads are processed securely and stored per user for review in the prediction history.</p>
+        </div>
+    </div>
+</div>
+
+<!-- TECHNOLOGY -->
+<h3 class="section-title">The Technology</h3>
+<p class="section-sub">Powered by a Swin Transformer vision backbone</p>
+<div class="row g-4 mb-5">
+    <div class="col-md-6">
+        <div class="feature-card grad-border reveal" data-spotlight data-tilt>
+            <div class="feature-icon">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                    <path d="M2 17l10 5 10-5"/>
+                    <path d="M2 12l10 5 10-5"/>
+                </svg>
+            </div>
+            <h5>Swin Transformer</h5>
+            <p>
+                A state-of-the-art vision transformer with a hierarchical feature pyramid and
+                shifted windows, fine-tuned on fetal brain ultrasound data for precise
+                multi-class classification.
+            </p>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="feature-card grad-border reveal" data-spotlight data-tilt>
+            <div class="feature-icon">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="20" x2="12" y2="10"/>
+                    <line x1="18" y1="20" x2="18" y2="4"/>
+                    <line x1="6" y1="20" x2="6" y2="16"/>
+                </svg>
+            </div>
+            <h5>15-Class Model</h5>
+            <p>
+                Trained to distinguish 14 abnormality types from normal cases, with per-class
+                confidence scoring returned for every prediction.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- CONDITIONS -->
+<h3 class="section-title">Detectable Conditions</h3>
+<p class="section-sub">The model can identify these 15 fetal brain conditions from ultrasound scans</p>
+<div class="row g-2 mb-5">
+    {% set conditions = [
+        "Arnold Chiari Malformation", "Arachnoid Cyst", "Cerebellar Hypoplasia",
+        "Cisterna Magna", "Colpocephaly", "Encephalocele", "Holoprosencephaly",
+        "Hydranencephaly", "Intracranial Hemorrhage", "Intracranial Tumor",
+        "Mild Ventriculomegaly", "Moderate Ventriculomegaly", "Normal",
+        "Polencephaly", "Severe Ventriculomegaly"
+    ] %}
+    {% for c in conditions %}
+    <div class="col-6 col-md-4 col-lg-3">
+        <div class="condition-card grad-border reveal" data-spotlight>{{ c }}</div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="text-center mb-4">
+    <a href="{{ url_for('register') }}" class="btn btn-accent btn-lg px-5">Get Started</a>
+</div>
+
+{% endblock %}

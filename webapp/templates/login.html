@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="auth-wrapper">
+    <div class="card auth-card grad-border reveal" style="max-width: 440px;">
+        <div class="card-body p-4">
+            <div class="text-center mb-4">
+                <div class="d-inline-flex p-3 rounded-circle mb-2" style="background: var(--accent-light);">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-accent">
+                        <path d="M12 2a4 4 0 0 1 4 4c0 .5-.1 1-.3 1.4 1.8 1 3 2.9 3 5.1 0 1.8-.8 3.4-2.1 4.4.5 1 .8 2.1.8 3.2A4 4 0 0 1 9.6 22a4 4 0 0 1-5-5.6C2.6 14.6 1.7 12.6 1.7 10.4c0-2.2 1.2-4.1 3-5.1a4 4 0 0 1-.3-1.4A4 4 0 0 1 12 2z"/>
+                        <path d="M9 12h6M12 9v6"/>
+                    </svg>
+                </div>
+                <h3 class="fw-bold mb-1">Sign In to Portal</h3>
+                <p class="text-muted small mb-0">Select your access role to continue</p>
+            </div>
+
+            <!-- ROLE SELECTOR TABS -->
+            <ul class="nav nav-pills nav-fill mb-4 auth-role-tabs">
+                <li class="nav-item">
+                    <button class="nav-link active" id="doctorTabBtn" type="button" onclick="setRole('doctor')">
+                        🩺 Doctor Login
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" id="adminTabBtn" type="button" onclick="setRole('admin')">
+                        🛡️ Admin Portal
+                    </button>
+                </li>
+            </ul>
+
+            <form method="post" id="loginForm">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" id="idLabel">Doctor Email</label>
+                    <input type="text" class="form-control" name="email" id="emailInput" placeholder="doctor@hospital.org" required autocomplete="username">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Password</label>
+                    <input type="password" class="form-control" name="password" id="passwordInput" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+
+                <button type="submit" class="btn btn-accent w-100 py-2 fw-semibold mt-2" id="submitBtn">
+                    Sign In as Doctor
+                </button>
+            </form>
+
+            <div id="doctorRegisterLink" class="text-center mt-4 mb-0 text-muted small">
+                Don't have a doctor account?
+                <a href="{{ url_for('register') }}" class="auth-link fw-semibold">Register as Doctor</a>
+            </div>
+
+            <div id="adminNotice" class="text-center mt-4 mb-0 text-muted small d-none">
+                <span>🛡️ Admin access requires pre-configured master credentials.</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function setRole(role) {
+    const docBtn = document.getElementById('doctorTabBtn');
+    const admBtn = document.getElementById('adminTabBtn');
+    const idLabel = document.getElementById('idLabel');
+    const emailInput = document.getElementById('emailInput');
+    const submitBtn = document.getElementById('submitBtn');
+    const docRegLink = document.getElementById('doctorRegisterLink');
+    const admNotice = document.getElementById('adminNotice');
+
+    if (role === 'admin') {
+        docBtn.classList.remove('active');
+        admBtn.classList.add('active');
+        idLabel.textContent = 'Admin Username / Email';
+        emailInput.placeholder = 'Enter Admin Login ID';
+        submitBtn.textContent = 'Sign In to Admin Portal';
+        submitBtn.classList.remove('btn-accent');
+        submitBtn.classList.add('btn-warning');
+        docRegLink.classList.add('d-none');
+        admNotice.classList.remove('d-none');
+    } else {
+        admBtn.classList.remove('active');
+        docBtn.classList.add('active');
+        idLabel.textContent = 'Doctor Email';
+        emailInput.placeholder = 'doctor@hospital.org';
+        submitBtn.textContent = 'Sign In as Doctor';
+        submitBtn.classList.remove('btn-warning');
+        submitBtn.classList.add('btn-accent');
+        docRegLink.classList.remove('d-none');
+        admNotice.classList.add('d-none');
+    }
+}
+</script>
+{% endblock %}

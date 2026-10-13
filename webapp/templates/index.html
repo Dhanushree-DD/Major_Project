@@ -1,0 +1,519 @@
+{% extends "base.html" %} {% block content %}
+
+<!-- LANDING PAGE -->
+<div class="hero-split">
+  <div class="hero-content">
+    <span class="hero-badge reveal"
+      >Deep Learning &middot; Medical Imaging</span
+    >
+    <h1>AI-Powered <span>Fetal Brain</span> Abnormality Detection</h1>
+    <p>
+      A deep learning system that classifies fetal brain ultrasound images into
+      15 conditions using a model with
+      <strong>98.70% validation accuracy</strong>.
+    </p>
+    <div class="hero-actions">
+      {% if session.user_id %}
+      <a href="{{ url_for('analyze') }}" class="btn btn-accent btn-lg px-4"
+        >Start Analyzing</a
+      >
+      <a
+        href="{{ url_for('profile') }}"
+        class="btn btn-outline-accent btn-lg px-4"
+        >My Profile</a
+      >
+      {% else %}
+      <a href="{{ url_for('register') }}" class="btn btn-accent btn-lg px-4"
+        >Get Started</a
+      >
+      <a
+        href="{{ url_for('login') }}"
+        class="btn btn-outline-accent btn-lg px-4"
+        >Login</a
+      >
+      {% endif %}
+    </div>
+  </div>
+  <div class="hero-visual reveal" aria-hidden="true">
+    <div class="scan-animation">
+      <div class="scan-ring ring-1"></div>
+      <div class="scan-ring ring-2"></div>
+      <div class="scan-ring ring-3"></div>
+      <div class="scan-sweep"></div>
+      <div class="scan-sonar"></div>
+      <div class="scan-core">
+        <svg
+          width="72"
+          height="72"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M12 2a4 4 0 0 1 4 4c0 .5-.1 1-.3 1.4 1.8 1 3 2.9 3 5.1 0 1.8-.8 3.4-2.1 4.4.5 1 .8 2.1.8 3.2A4 4 0 0 1 9.6 22a4 4 0 0 1-5-5.6C2.6 14.6 1.7 12.6 1.7 10.4c0-2.2 1.2-4.1 3-5.1a4 4 0 0 1-.3-1.4A4 4 0 0 1 12 2z"
+          />
+          <path d="M9 12h6M12 9v6" />
+        </svg>
+      </div>
+      <span class="scan-tag tag-1">98.70% Accurate</span>
+      <span class="scan-tag tag-2">15 Conditions</span>
+      <span class="scan-tag tag-3">Real-Time AI</span>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="row g-4 mb-5 justify-content-center">
+  <div class="col-6 col-md-3">
+    <div class="stat-box grad-border reveal" data-spotlight>
+      <h4>98.70%</h4>
+      <small>Validation Accuracy</small>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-box grad-border reveal" data-spotlight>
+      <h4>15</h4>
+      <small>Detectable Conditions</small>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-box grad-border reveal" data-spotlight>
+      <h4>&lt;5s</h4>
+      <small>Analysis Time</small>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-box grad-border reveal" data-spotlight>
+      <h4>24/7</h4>
+      <small>Accessible Platform</small>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div class="row g-4 mb-5">
+  <div class="col-md-4">
+    <div class="feature-card grad-border reveal" data-spotlight data-tilt>
+      <div class="feature-icon">
+        <svg
+          width="26"
+          height="26"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M12 2L2 7l10 5 10-5-10-5z" />
+          <path d="M2 17l10 5 10-5" />
+          <path d="M2 12l10 5 10-5" />
+        </svg>
+      </div>
+      <h5>15 Conditions</h5>
+      <p>
+        Classifies 14 abnormality types plus normal cases from ultrasound
+        images.
+      </p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="feature-card grad-border reveal" data-spotlight data-tilt>
+      <div class="feature-icon">
+        <svg
+          width="26"
+          height="26"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <polyline points="12 6 12 12 16 14" />
+        </svg>
+      </div>
+      <h5>Real-Time Results</h5>
+      <p>
+        Upload an ultrasound image and get instant classification with
+        confidence score.
+      </p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="feature-card grad-border reveal" data-spotlight data-tilt>
+      <div class="feature-icon">
+        <svg
+          width="26"
+          height="26"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"
+          />
+        </svg>
+      </div>
+      <h5>Swin Transformer</h5>
+      <p>
+        State-of-the-art vision transformer architecture fine-tuned on fetal
+        brain ultrasound data.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- WHY CHOOSE US -->
+<h3 class="section-title">Why Choose FetalBrain AI</h3>
+<p class="section-sub">
+  Built for speed, accuracy and trust in clinical workflows
+</p>
+<div class="row g-4 mb-5">
+  <div class="col-md-4">
+    <div class="feature-card grad-border reveal" data-spotlight data-tilt>
+      <div class="feature-icon">
+        <svg
+          width="26"
+          height="26"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+          <polyline points="22 4 12 14.01 9 11.01" />
+        </svg>
+      </div>
+      <h5>High Accuracy</h5>
+      <p>
+        98.70% validation accuracy from a fine-tuned Swin Transformer model
+        trained on real ultrasound data.
+      </p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="feature-card grad-border reveal" data-spotlight data-tilt>
+      <div class="feature-icon">
+        <svg
+          width="26"
+          height="26"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+        </svg>
+      </div>
+      <h5>Instant Results</h5>
+      <p>
+        Get classification and confidence scores in seconds — no waiting, no
+        complex setup.
+      </p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="feature-card grad-border reveal" data-spotlight data-tilt>
+      <div class="feature-icon">
+        <svg
+          width="26"
+          height="26"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+        </svg>
+      </div>
+      <h5>Privacy-First</h5>
+      <p>
+        Uploads and patient details are stored securely per account and visible
+        only to the owner.
+      </p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="feature-card grad-border reveal" data-spotlight data-tilt>
+      <div class="feature-icon">
+        <svg
+          width="26"
+          height="26"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+      </div>
+      <h5>Easy to Use</h5>
+      <p>
+        A clean three-step flow: upload the scan, run the analysis, and review
+        the result.
+      </p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="feature-card grad-border reveal" data-spotlight data-tilt>
+      <div class="feature-icon">
+        <svg
+          width="26"
+          height="26"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+        </svg>
+      </div>
+      <h5>History Tracking</h5>
+      <p>
+        Every scan is saved to your profile so results can be reviewed, compared
+        and shared.
+      </p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="feature-card grad-border reveal" data-spotlight data-tilt>
+      <div class="feature-icon">
+        <svg
+          width="26"
+          height="26"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            d="M9 12l2 2 4-4m5.62-1.62A10.79 10.79 0 0 1 12 3a10.79 10.79 0 0 1-8.62 4.38 10.81 10.81 0 0 0 1.02 10.6A10.79 10.79 0 0 0 12 21a10.79 10.79 0 0 0 7.6-3.02 10.81 10.81 0 0 0 1.02-10.6z"
+          />
+        </svg>
+      </div>
+      <h5>Clinically Relevant</h5>
+      <p>
+        Detects 14 abnormality types plus normal cases, supporting screening and
+        triage workflows.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- CONDITIONS -->
+<h3 class="section-title">Detectable Conditions</h3>
+<p class="section-sub">
+  The model can identify these 15 fetal brain conditions from ultrasound scans
+</p>
+<div class="row g-2 mb-5">
+  {% set conditions = [ "Arnold Chiari Malformation", "Arachnoid Cyst",
+  "Cerebellar Hypoplasia", "Cisterna Magna", "Colpocephaly", "Encephalocele",
+  "Holoprosencephaly", "Hydranencephaly", "Intracranial Hemorrhage",
+  "Intracranial Tumor", "Mild Ventriculomegaly", "Moderate Ventriculomegaly",
+  "Normal", "Polencephaly", "Severe Ventriculomegaly" ] %} {% for c in
+  conditions %}
+  <div class="col-6 col-md-4 col-lg-3">
+    <div class="condition-card grad-border reveal" data-spotlight>{{ c }}</div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- HOW IT WORKS -->
+<h3 class="section-title">How It Works</h3>
+<p class="section-sub">Three simple steps to get a classification result</p>
+<div class="row g-4 mb-4">
+  <div class="col-md-4">
+    <div class="step-card grad-border reveal" data-spotlight data-tilt>
+      <div class="step-num">1</div>
+      <h6>Upload Ultrasound</h6>
+      <p>
+        Select a fetal brain ultrasound image in JPG, JPEG, PNG or BMP format.
+      </p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="step-card grad-border reveal" data-spotlight data-tilt>
+      <div class="step-num">2</div>
+      <h6>AI Analysis</h6>
+      <p>
+        The Swin Transformer model processes the image and computes class
+        probabilities.
+      </p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="step-card grad-border reveal" data-spotlight data-tilt>
+      <div class="step-num">3</div>
+      <h6>Get Results</h6>
+      <p>View the predicted condition and confidence score instantly.</p>
+    </div>
+  </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<h3 class="section-title">What Our Users Say</h3>
+<p class="section-sub">Trusted by healthcare professionals and researchers</p>
+<div class="row g-4 mb-5">
+  <div class="col-md-4">
+    <div class="feature-card grad-border reveal" data-spotlight data-tilt>
+      <div class="quote-mark">"</div>
+      <p class="testimonial-text">
+        The confidence scores and instant results have made our screening
+        workflow noticeably faster.
+      </p>
+      <div class="testimonial-author">
+        <strong>Dr. S. Priya</strong>
+        <small class="d-block text-muted">Radiologist</small>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="feature-card grad-border reveal" data-spotlight data-tilt>
+      <div class="quote-mark">"</div>
+      <p class="testimonial-text">
+        Accurate, fast and easy to use. A valuable second opinion for fetal
+        ultrasound triage.
+      </p>
+      <div class="testimonial-author">
+        <strong>Dr. R. Kumar</strong>
+        <small class="d-block text-muted">Obstetrician</small>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="feature-card grad-border reveal" data-spotlight data-tilt>
+      <div class="quote-mark">"</div>
+      <p class="testimonial-text">
+        The prediction history makes it simple to track and compare scans over
+        time.
+      </p>
+      <div class="testimonial-author">
+        <strong>M. Nithya</strong>
+        <small class="d-block text-muted">Sonographer</small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<h3 class="section-title">Frequently Asked Questions</h3>
+<p class="section-sub">Everything you need to know before you start</p>
+<div class="row justify-content-center mb-5">
+  <div class="col-lg-8">
+    <div class="accordion accordion-flush" id="faqAccordion">
+      <div class="accordion-item reveal grad-border">
+        <h2 class="accordion-header">
+          <button
+            class="accordion-button collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#faq1"
+          >
+            What image formats are supported?
+          </button>
+        </h2>
+        <div
+          id="faq1"
+          class="accordion-collapse collapse"
+          data-bs-parent="#faqAccordion"
+        >
+          <div class="accordion-body">
+            You can upload JPG, JPEG, PNG and BMP ultrasound images. The image
+            is automatically resized and prepared for the model.
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item reveal grad-border">
+        <h2 class="accordion-header">
+          <button
+            class="accordion-button collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#faq2"
+          >
+            How accurate is the model?
+          </button>
+        </h2>
+        <div
+          id="faq2"
+          class="accordion-collapse collapse"
+          data-bs-parent="#faqAccordion"
+        >
+          <div class="accordion-body">
+            The model achieves 98.70% validation accuracy across 15 fetal brain
+            conditions using the Swin Transformer architecture.
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item reveal grad-border">
+        <h2 class="accordion-header">
+          <button
+            class="accordion-button collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#faq3"
+          >
+            Is my data private?
+          </button>
+        </h2>
+        <div
+          id="faq3"
+          class="accordion-collapse collapse"
+          data-bs-parent="#faqAccordion"
+        >
+          <div class="accordion-body">
+            Yes. Uploads and patient details are stored securely per account and
+            only visible to the signed-in owner through their profile.
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item reveal grad-border">
+        <h2 class="accordion-header">
+          <button
+            class="accordion-button collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#faq4"
+          >
+            Can I use it without an account?
+          </button>
+        </h2>
+        <div
+          id="faq4"
+          class="accordion-collapse collapse"
+          data-bs-parent="#faqAccordion"
+        >
+          <div class="accordion-body">
+            An account is required so your prediction history and patient
+            details can be saved and reviewed later.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FINAL CTA -->
+<div class="cta-banner grad-border reveal" data-spotlight>
+  <h2>Ready to Analyze a Scan?</h2>
+  <p>
+    Create your free account and get your first fetal brain analysis in under a
+    minute.
+  </p>
+  {% if session.user_id %}
+  <a href="{{ url_for('analyze') }}" class="btn btn-accent btn-lg px-5"
+    >Start Analyzing</a
+  >
+  {% else %}
+  <a href="{{ url_for('register') }}" class="btn btn-accent btn-lg px-5"
+    >Get Started Free</a
+  >
+  {% endif %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- BREADCRUMB & HEADER -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-accent btn-sm d-inline-flex align-items-center gap-1">
+                ← Back to Admin Control Center
+            </a>
+            <span class="badge bg-warning text-dark px-3 py-2 fw-bold">
+                Pending Requests: {{ pending_count }}
+            </span>
+        </div>
+
+        <div class="profile-header grad-border reveal">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="avatar-circle" style="background: linear-gradient(135deg, #0ea5e9, #0284c7); color: #fff;">
+                        <span>📋</span>
+                    </div>
+                    <div>
+                        <h4 class="fw-bold mb-0" style="color: var(--text-primary);">Doctor Registration Verification Requests</h4>
+                        <p class="text-muted small mb-0 mt-1">
+                            Review and authorize medical clinician registrations. Only approved clinicians are permitted to access the diagnostic scanning system.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PENDING REQUESTS SECTION -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card grad-border reveal">
+            <div class="card-header d-flex justify-content-between align-items-center py-3 px-4" style="background: var(--bg-elevated);">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-warning text-dark px-2 py-1">Action Required</span>
+                    <h5 class="mb-0 fw-bold">Pending Verification Requests ({{ pending_requests | length }})</h5>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                {% if pending_requests %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="ps-4" style="width: 50px;">#</th>
+                                    <th>Doctor Name</th>
+                                    <th>Hospital / Organisation</th>
+                                    <th>Email & Contact</th>
+                                    <th>Submitted Date</th>
+                                    <th>Status</th>
+                                    <th class="text-end pe-4" style="width: 220px;">Decision Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for req in pending_requests %}
+                                <tr>
+                                    <td class="ps-4 font-monospace text-muted">{{ req['id'] }}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="avatar-circle-sm bg-accent text-white" style="width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem;">
+                                                {{ (req['name'] or 'D')[0] | upper }}
+                                            </div>
+                                            <span class="fw-bold">Dr. {{ req['name'] }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="text-muted small">
+                                            🏥 {{ req['organisation'] or 'Clinical Unit' }}
+                                        </span>
+                                    </td>
+                                    <td class="small">
+                                        <div>📧 {{ req['email'] }}</div>
+                                        {% if req['phone'] %}
+                                            <div class="text-muted">📞 {{ req['phone'] }}</div>
+                                        {% endif %}
+                                    </td>
+                                    <td class="small text-muted">
+                                        {{ req['created_at'] | replace('T', ' ') | truncate(19, true, '') }}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-warning text-dark fw-bold px-2 py-1">
+                                            ⏳ Pending
+                                        </span>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <div class="d-inline-flex gap-2">
+                                            <form method="post" action="{{ url_for('admin_approve_doctor', user_id=req['id']) }}" style="display:inline;">
+                                                <button type="submit" class="btn btn-success btn-sm px-3 fw-semibold d-inline-flex align-items-center gap-1" title="Approve this doctor">
+                                                    ✓ Approve
+                                                </button>
+                                            </form>
+                                            <form method="post" action="{{ url_for('admin_reject_doctor', user_id=req['id']) }}" style="display:inline;" onsubmit="return confirm('Reject this doctor registration request?');">
+                                                <button type="submit" class="btn btn-danger btn-sm px-3 fw-semibold d-inline-flex align-items-center gap-1" title="Reject this doctor">
+                                                    ✗ Reject
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5 text-muted">
+                        <div class="mb-2 fs-2">🎉</div>
+                        <h6 class="fw-bold mb-1">No Pending Requests</h6>
+                        <p class="small mb-0">All doctor registration requests have been reviewed and processed.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ALL REGISTRATIONS HISTORY -->
+<div class="row">
+    <div class="col-12">
+        <div class="card grad-border reveal">
+            <div class="card-header d-flex justify-content-between align-items-center py-3 px-4">
+                <h5 class="mb-0 fw-bold">All Registration Records ({{ all_requests | length }})</h5>
+            </div>
+            <div class="card-body p-0">
+                {% if all_requests %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0 small">
+                            <thead>
+                                <tr>
+                                    <th class="ps-4" style="width: 50px;">#</th>
+                                    <th>Doctor Name</th>
+                                    <th>Organisation</th>
+                                    <th>Contact</th>
+                                    <th>Registered Date</th>
+                                    <th>Current Status</th>
+                                    <th class="text-end pe-4">Change Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for r in all_requests %}
+                                <tr>
+                                    <td class="ps-4 font-monospace text-muted">{{ r['id'] }}</td>
+                                    <td class="fw-semibold">Dr. {{ r['name'] }}</td>
+                                    <td class="text-muted">{{ r['organisation'] or 'Clinical Unit' }}</td>
+                                    <td>{{ r['email'] }}</td>
+                                    <td class="text-muted">{{ r['created_at'] | replace('T', ' ') | truncate(10, true, '') }}</td>
+                                    <td>
+                                        {% if r['status'] == 'approved' %}
+                                            <span class="badge bg-success-subtle text-success fw-semibold">✓ Approved</span>
+                                        {% elif r['status'] == 'rejected' %}
+                                            <span class="badge bg-danger-subtle text-danger fw-semibold">✗ Rejected</span>
+                                        {% else %}
+                                            <span class="badge bg-warning-subtle text-warning fw-semibold">⏳ Pending</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <div class="d-inline-flex gap-1">
+                                            {% if r['status'] != 'approved' %}
+                                                <form method="post" action="{{ url_for('admin_approve_doctor', user_id=r['id']) }}" style="display:inline;">
+                                                    <button type="submit" class="btn btn-outline-success btn-sm py-0 px-2" title="Approve Doctor">
+                                                        Approve
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                            {% if r['status'] != 'rejected' %}
+                                                <form method="post" action="{{ url_for('admin_reject_doctor', user_id=r['id']) }}" style="display:inline;" onsubmit="return confirm('Revoke or reject access for this doctor?');">
+                                                    <button type="submit" class="btn btn-outline-warning btn-sm py-0 px-2" title="Reject Doctor">
+                                                        Reject
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                            <form method="post" action="{{ url_for('admin_delete_doctor', doctor_id=r['id']) }}" style="display:inline;" onsubmit="return confirm('Permanently delete this doctor and all associated records?');">
+                                                <button type="submit" class="btn btn-outline-danger btn-sm py-0 px-2" title="Delete account">
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4 text-muted small">
+                        No doctor records available.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

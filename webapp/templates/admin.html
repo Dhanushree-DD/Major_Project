@@ -1,0 +1,578 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- PENDING VERIFICATION REQUESTS BANNER -->
+{% if pending_requests_count > 0 %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="alert alert-warning d-flex justify-content-between align-items-center flex-wrap gap-3 py-3 px-4 shadow-sm" style="border-radius: var(--radius); border-left: 5px solid #f59e0b;">
+            <div class="d-flex align-items-center gap-3">
+                <div class="fs-3">🔔</div>
+                <div>
+                    <h6 class="fw-bold mb-0">New Doctor Verification Requests Awaiting Your Approval!</h6>
+                    <span class="small">There are <b>{{ pending_requests_count }}</b> clinician registration request(s) waiting for admin review.</span>
+                </div>
+            </div>
+            <a href="{{ url_for('admin_requests') }}" class="btn btn-warning btn-sm px-4 fw-bold shadow-sm">
+                Review Requests ({{ pending_requests_count }}) →
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- ADMIN DASHBOARD HEADER -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="profile-header grad-border reveal">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="avatar-circle" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff;">
+                        <span>👑</span>
+                    </div>
+                    <div>
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <h4 class="fw-bold mb-0" style="color: var(--text-primary);">Administrator Control Center</h4>
+                            <span class="badge bg-warning text-dark fw-bold">Master Admin</span>
+                        </div>
+                        <p class="text-muted small mb-0 mt-1">
+                            Oversee clinician approvals, monitor scan throughput, track login audits, and manage neurosonogram diagnostic records.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <a href="{{ url_for('admin_requests') }}" class="btn btn-outline-warning btn-sm px-3 d-inline-flex align-items-center gap-1">
+                        📋 Doctor Requests
+                        {% if pending_requests_count > 0 %}
+                            <span class="badge bg-warning text-dark ms-1">{{ pending_requests_count }}</span>
+                        {% endif %}
+                    </a>
+                    <a href="{{ url_for('admin_export_doctors') }}" class="btn btn-outline-accent btn-sm px-3 d-inline-flex align-items-center gap-1">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Export Doctors CSV
+                    </a>
+                    <a href="{{ url_for('analyze') }}" class="btn btn-accent btn-sm px-3">
+                        + Scan Ultrasound
+                    </a>
+                    <button type="button" class="btn btn-danger btn-sm px-3 d-inline-flex align-items-center gap-1"
+                            data-bs-toggle="modal" data-bs-target="#hardResetModal" title="Reset all project data entries">
+                        ⚠️ Hard Reset System
+                    </button>
+                    <a href="{{ url_for('logout') }}" class="btn btn-outline-danger btn-sm px-3 d-inline-flex align-items-center gap-1">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SYSTEM KPI STAT CARDS -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="card grad-border reveal p-3 text-center h-100">
+            <div class="text-accent mb-1">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+            </div>
+            <h3 class="fw-bold mb-0" style="color: var(--text-primary);">{{ total_doctors }}</h3>
+            <small class="text-muted fw-semibold">Total Doctors</small>
+            <div class="small text-success mt-1" style="font-size: 0.75rem;">{{ approved_doctors_count }} Approved &middot; {{ pending_requests_count }} Pending</div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card grad-border reveal p-3 text-center h-100" style="border-color: rgba(56, 189, 248, 0.4);">
+            <div class="text-info mb-1">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                </svg>
+            </div>
+            <h3 class="fw-bold mb-0 text-info">{{ today_scans_total }}</h3>
+            <small class="text-muted fw-semibold">Scans Done Today</small>
+            <div class="small text-muted mt-1" style="font-size: 0.75rem;">Admin: {{ today_admin_scans }} &middot; Doctors: {{ today_doctor_scans }}</div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card grad-border reveal p-3 text-center h-100">
+            <div class="text-info mb-1">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                </svg>
+            </div>
+            <h3 class="fw-bold mb-0" style="color: var(--text-primary);">{{ total_scans }}</h3>
+            <small class="text-muted fw-semibold">All-Time Scans</small>
+            <div class="small text-muted mt-1" style="font-size: 0.75rem;">{{ admin_scans | length }} Scanned by Admin</div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card grad-border reveal p-3 text-center h-100">
+            <div class="text-danger mb-1">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+            </div>
+            <h3 class="fw-bold mb-0 text-danger">{{ total_anomalies }}</h3>
+            <small class="text-muted fw-semibold">Anomalies Detected</small>
+            <div class="small text-success mt-1" style="font-size: 0.75rem;">{{ total_normal }} Normal Scans</div>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION: ADMIN SCANNED PATIENTS -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card grad-border reveal">
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2 py-3 px-4" style="background: var(--bg-elevated);">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="fs-5">👑</span>
+                    <h5 class="mb-0 fw-bold">Admin Scanned Patients & Ultrasound Uploads</h5>
+                    <span class="badge bg-accent">{{ admin_scans | length }} Scans Done by Admin</span>
+                </div>
+                <a href="{{ url_for('analyze') }}" class="btn btn-accent btn-sm px-3">
+                    + Upload & Scan Ultrasound as Admin
+                </a>
+            </div>
+            <div class="card-body p-0">
+                {% if admin_scans %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="ps-4" style="width: 50px;">#</th>
+                                    <th style="width: 60px;">Image</th>
+                                    <th>Patient Name</th>
+                                    <th>Contact Information</th>
+                                    <th>AI Diagnosis</th>
+                                    <th>Confidence</th>
+                                    <th>Scan Date</th>
+                                    <th class="text-end pe-4" style="width: 170px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for p in admin_scans %}
+                                <tr>
+                                    <td class="ps-4 font-monospace text-muted">{{ loop.index }}</td>
+                                    <td>
+                                        <img src="{{ url_for('static', filename='uploads/' + p['filename']) }}"
+                                             class="thumb-img" alt="Scan" style="width:44px;height:44px;object-fit:cover;border-radius:6px;">
+                                    </td>
+                                    <td class="fw-semibold">{{ p['patient_name'] or 'Anonymous Patient' }}</td>
+                                    <td class="small text-muted">
+                                        {% if p['patient_email'] %}<div>📧 {{ p['patient_email'] }}</div>{% endif %}
+                                        {% if p['patient_phone'] %}<div>📞 {{ p['patient_phone'] }}</div>{% endif %}
+                                        {% if not p['patient_email'] and not p['patient_phone'] %}—{% endif %}
+                                    </td>
+                                    <td>
+                                        {% if p['result_class'] | lower == 'normal' %}
+                                            <span class="badge bg-success px-2 py-1 fs-6 fw-semibold">Normal</span>
+                                        {% else %}
+                                            <span class="badge bg-danger px-2 py-1 fs-6 fw-semibold">{{ p['result_class'] }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="fw-bold">{{ p['confidence'] }}%</td>
+                                    <td class="text-muted small">
+                                        {{ p['created_at'] | replace('T', ' ') | truncate(19, true, '') }}
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <div class="d-inline-flex gap-1">
+                                            <a href="{{ url_for('export_single_pdf', prediction_id=p['id']) }}" class="btn btn-accent btn-sm px-2 py-1" title="Download Report PDF">
+                                                PDF
+                                            </a>
+                                            <form method="post" action="{{ url_for('admin_delete_prediction', prediction_id=p['id']) }}" style="display:inline;" onsubmit="return confirm('Delete this scan entry permanently?');">
+                                                <button type="submit" class="btn btn-outline-danger btn-sm px-2 py-1" title="Delete scan">
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4 text-muted small">
+                        <p class="mb-2">No ultrasound scans uploaded by Admin yet.</p>
+                        <a href="{{ url_for('analyze') }}" class="btn btn-sm btn-outline-accent">Upload First Scan as Admin</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- DOCTORS DIRECTORY & MANAGEMENT TABLE -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card grad-border reveal">
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2 py-3 px-4">
+                <div class="d-flex align-items-center gap-2">
+                    <h5 class="mb-0 fw-bold">Registered Doctors & Clinicians Directory</h5>
+                    <span class="badge bg-accent">{{ doctors | length }} Doctors</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <input type="text" id="doctorSearchInput" class="form-control form-control-sm" placeholder="🔍 Search doctors by name, email..." style="width: 250px;" onkeyup="filterDoctors()">
+                </div>
+            </div>
+            <div class="card-body p-0">
+                {% if doctors %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0" id="doctorsTable">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;" class="ps-4">#</th>
+                                    <th>Doctor Name</th>
+                                    <th>Organisation / Hospital</th>
+                                    <th>Contact Information</th>
+                                    <th>Status</th>
+                                    <th>Last Login</th>
+                                    <th>Scans Done</th>
+                                    <th class="text-end pe-4" style="width: 220px;">Admin Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for d in doctors %}
+                                <tr>
+                                    <td class="ps-4 font-monospace text-muted">{{ d['id'] }}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="avatar-circle-sm bg-accent text-white" style="width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem;">
+                                                {{ d['name'][0] | upper }}
+                                            </div>
+                                            <div>
+                                                <a href="{{ url_for('admin_doctor_detail', doctor_id=d['id']) }}" class="fw-bold text-decoration-none text-accent">
+                                                    Dr. {{ d['name'] }}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="text-muted small">
+                                            🏥 {{ d['organisation'] or 'Clinical Unit' }}
+                                        </span>
+                                    </td>
+                                    <td class="small">
+                                        <div>📧 {{ d['email'] }}</div>
+                                        {% if d['phone'] %}
+                                            <div class="text-muted">📞 {{ d['phone'] }}</div>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if d['status'] == 'approved' %}
+                                            <span class="badge bg-success-subtle text-success fw-semibold">✓ Approved</span>
+                                        {% elif d['status'] == 'rejected' %}
+                                            <span class="badge bg-danger-subtle text-danger fw-semibold">✗ Rejected</span>
+                                        {% else %}
+                                            <span class="badge bg-warning-subtle text-warning fw-semibold">⏳ Pending</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="small">
+                                        {% if d['last_login'] %}
+                                            <span class="badge bg-success-subtle text-success">
+                                                {{ d['last_login'] | replace('T', ' ') | truncate(19, true, '') }}
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-secondary-subtle text-muted">Never Logged In</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info-subtle text-info fw-bold px-2 py-1">
+                                            {{ d['scan_count'] }} Scans
+                                        </span>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <div class="d-inline-flex gap-1">
+                                            <a href="{{ url_for('admin_doctor_detail', doctor_id=d['id']) }}"
+                                               class="btn btn-outline-accent btn-sm px-2 py-1" title="View Full Activity & Scans">
+                                                View Info
+                                            </a>
+                                            {% if d['status'] == 'pending' %}
+                                                <form method="post" action="{{ url_for('admin_approve_doctor', user_id=d['id']) }}" style="display:inline;">
+                                                    <button type="submit" class="btn btn-success btn-sm px-2 py-1" title="Approve Doctor">
+                                                        Approve
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                            <button type="button" class="btn btn-outline-danger btn-sm px-2 py-1"
+                                                    data-doctor-id="{{ d['id'] }}"
+                                                    data-doctor-name="{{ d['name'] }}"
+                                                    data-doctor-email="{{ d['email'] }}"
+                                                    data-doctor-scans="{{ d['scan_count'] }}"
+                                                    onclick="handleDeleteDoctorClick(this)"
+                                                    title="Delete doctor entry">
+                                                Delete Dr
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5 text-muted">
+                        <p class="mb-0">No registered doctors found in the database.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TWO-COLUMN LAYOUT: RECENT DOCTOR LOGINS & RECENT SYSTEM SCANS -->
+<div class="row g-4 mb-4">
+    <!-- RECENT DOCTOR LOGINS AUDIT LOG -->
+    <div class="col-lg-6">
+        <div class="card grad-border reveal h-100">
+            <div class="card-header py-3 px-4 d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="text-accent">🕒</span>
+                    <h5 class="mb-0 fw-bold">Doctor Login Activity Track</h5>
+                </div>
+                <span class="badge bg-secondary-subtle text-muted">{{ recent_logins | length }} Logins</span>
+            </div>
+            <div class="card-body p-0">
+                {% if recent_logins %}
+                    <div class="table-responsive" style="max-height: 380px; overflow-y: auto;">
+                        <table class="table table-hover align-middle mb-0 small">
+                            <thead>
+                                <tr>
+                                    <th class="ps-4">Doctor</th>
+                                    <th>IP Address</th>
+                                    <th>Device / Browser</th>
+                                    <th class="text-end pe-4">Login Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for log in recent_logins %}
+                                <tr>
+                                    <td class="ps-4">
+                                        <a href="{{ url_for('admin_doctor_detail', doctor_id=log['user_id']) }}" class="fw-semibold text-decoration-none text-accent">
+                                            Dr. {{ log['doctor_name'] }}
+                                        </a>
+                                        <div class="text-muted" style="font-size: 0.75rem;">{{ log['doctor_email'] }}</div>
+                                    </td>
+                                    <td>
+                                        <code class="small text-muted">{{ log['ip_address'] or '127.0.0.1' }}</code>
+                                    </td>
+                                    <td class="text-muted" style="max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ log['user_agent'] }}">
+                                        {{ log['user_agent'] or 'Web Client' }}
+                                    </td>
+                                    <td class="text-end pe-4 font-monospace text-muted">
+                                        {{ log['login_time'] | replace('T', ' ') | truncate(19, true, '') }}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4 text-muted small">
+                        No login activity recorded yet.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- RECENT FETAL BRAIN SCANS -->
+    <div class="col-lg-6">
+        <div class="card grad-border reveal h-100">
+            <div class="card-header py-3 px-4 d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="text-info">🧠</span>
+                    <h5 class="mb-0 fw-bold">Recent System Scans</h5>
+                </div>
+                <span class="badge bg-secondary-subtle text-muted">{{ recent_scans | length }} Scans</span>
+            </div>
+            <div class="card-body p-0">
+                {% if recent_scans %}
+                    <div class="table-responsive" style="max-height: 380px; overflow-y: auto;">
+                        <table class="table table-hover align-middle mb-0 small">
+                            <thead>
+                                <tr>
+                                    <th class="ps-4" style="width: 50px;">Scan</th>
+                                    <th>Patient / Operator</th>
+                                    <th>AI Result</th>
+                                    <th>Confidence</th>
+                                    <th class="text-end pe-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for p in recent_scans %}
+                                <tr>
+                                    <td class="ps-4">
+                                        <img src="{{ url_for('static', filename='uploads/' + p['filename']) }}"
+                                             alt="Scan" style="width: 36px; height: 36px; object-fit: cover; border-radius: 6px;">
+                                    </td>
+                                    <td>
+                                        <div class="fw-semibold">{{ p['patient_name'] or 'Anonymous Patient' }}</div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">By {{ p['doctor_name'] }}</div>
+                                    </td>
+                                    <td>
+                                        {% if p['result_class'] | lower == 'normal' %}
+                                            <span class="badge bg-success">Normal</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">{{ p['result_class'] }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="fw-bold">{{ p['confidence'] }}%</td>
+                                    <td class="text-end pe-4">
+                                        <div class="d-inline-flex gap-1">
+                                            <a href="{{ url_for('export_single_pdf', prediction_id=p['id']) }}" class="btn btn-outline-accent btn-sm py-0 px-2" title="Download Report">
+                                                PDF
+                                            </a>
+                                            <form method="post" action="{{ url_for('admin_delete_prediction', prediction_id=p['id']) }}" style="display:inline;" onsubmit="return confirm('Delete this scan entry permanently?');">
+                                                <button type="submit" class="btn btn-outline-danger btn-sm py-0 px-2" title="Delete scan">
+                                                    ×
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4 text-muted small">
+                        No scan predictions found.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SYSTEM HARD RESET MODAL -->
+<div class="modal fade" id="hardResetModal" tabindex="-1" aria-labelledby="hardResetModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content grad-border" style="background: var(--bg-card); color: var(--text-primary); border: 2px solid #ef4444 !important;">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title text-danger fw-bold d-flex align-items-center gap-2" id="hardResetModalLabel">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                        <line x1="12" y1="9" x2="12" y2="13"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                    CRITICAL: Hard Reset Whole System
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="{{ url_for('admin_hard_reset') }}" onsubmit="return confirm('FINAL CONFIRMATION: Are you completely certain you want to wipe all records and files?');">
+                <div class="modal-body py-4">
+                    <div class="alert alert-danger mb-3">
+                        <h6 class="fw-bold mb-1">⚠️ THIS ACTION IS IRREVERSIBLE!</h6>
+                        <p class="small mb-0">Executing a Factory Hard Reset will permanently delete:</p>
+                        <ul class="small mb-0 ps-3 mt-1">
+                            <li>All Registered Doctor Accounts and Clinician Credentials</li>
+                            <li>All Neurosonogram Prediction Scan Records</li>
+                            <li>All Uploaded Ultrasound Image Files from Disk</li>
+                            <li>All Clinician Login Logs and Access Audit Trails</li>
+                            <li>All Support Tickets and Inquiry Submissions</li>
+                        </ul>
+                    </div>
+                    <p class="small text-muted mb-0">
+                        Admin master access will remain functional. The database tables will be re-initialized cleanly.
+                    </p>
+                </div>
+                <div class="modal-footer border-top">
+                    <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger btn-sm px-4 fw-bold">
+                        ⚠️ Yes, Wipe & Hard Reset System
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- DELETE DOCTOR CONFIRMATION MODAL -->
+<div class="modal fade" id="deleteDoctorModal" tabindex="-1" aria-labelledby="deleteDoctorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content grad-border" style="background: var(--bg-card); color: var(--text-primary);">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title text-danger fw-bold d-flex align-items-center gap-2" id="deleteDoctorModalLabel">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                        <line x1="12" y1="9" x2="12" y2="13"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                    Confirm Doctor Deletion
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" id="deleteDoctorForm">
+                <div class="modal-body py-4">
+                    <p class="mb-2">Are you sure you want to completely delete the doctor account for:</p>
+                    <div class="p-3 rounded-3 mb-3" style="background: var(--bg-elevated); border: 1px solid var(--border);">
+                        <h6 class="fw-bold mb-1" id="modalDoctorName">Doctor Name</h6>
+                        <small class="text-muted" id="modalDoctorEmail">doctor@email.com</small>
+                    </div>
+                    <div class="alert alert-warning small mb-0">
+                        ⚠️ <b>Warning:</b> This will permanently delete this doctor's account, login records, and all <span id="modalDoctorScans">0</span> associated fetal brain scans and image files.
+                    </div>
+                </div>
+                <div class="modal-footer border-top">
+                    <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger btn-sm px-4 fw-semibold">
+                        Yes, Delete Doctor Entry
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function filterDoctors() {
+    var input = document.getElementById("doctorSearchInput");
+    var filter = input.value.toUpperCase();
+    var table = document.getElementById("doctorsTable");
+    var tr = table.getElementsByTagName("tr");
+
+    for (var i = 1; i < tr.length; i++) {
+        var tdText = tr[i].textContent || tr[i].innerText;
+        if (tdText.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+        } else {
+            tr[i].style.display = "none";
+        }
+    }
+}
+
+function handleDeleteDoctorClick(btn) {
+    var doctorId = btn.getAttribute("data-doctor-id");
+    var doctorName = btn.getAttribute("data-doctor-name") || "Doctor";
+    var doctorEmail = btn.getAttribute("data-doctor-email") || "";
+    var scanCount = btn.getAttribute("data-doctor-scans") || "0";
+
+    document.getElementById("modalDoctorName").innerText = "Dr. " + doctorName;
+    document.getElementById("modalDoctorEmail").innerText = doctorEmail;
+    document.getElementById("modalDoctorScans").innerText = scanCount;
+    document.getElementById("deleteDoctorForm").action = "/admin/doctor/" + doctorId + "/delete";
+
+    var modal = new bootstrap.Modal(document.getElementById("deleteDoctorModal"));
+    modal.show();
+}
+</script>
+{% endblock %}

@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="landing-hero mb-4">
+  <span class="hero-badge mb-2">Clinical & Technical Desk</span>
+  <h1>Support <span>Portal</span></h1>
+  <p>
+    Dedicated technical and clinical assistance for radiologists, obstetricians, and healthcare administrators.
+  </p>
+</div>
+
+<div class="row g-4 mb-5 align-items-stretch">
+  <div class="col-lg-5">
+    <div class="card contact-card grad-border reveal h-100">
+      <div class="card-body p-4">
+        <h5 class="fw-bold mb-4" style="color: var(--text-primary);">Clinical Support Contacts</h5>
+
+        <div class="d-flex align-items-center mb-4">
+          <div class="contact-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+          </div>
+          <div class="ms-3">
+            <small class="text-muted text-uppercase d-block contact-label">Emergency Helpline</small>
+            <strong class="contact-value">+91 8197007477</strong>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center mb-4">
+          <div class="contact-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+          </div>
+          <div class="ms-3">
+            <small class="text-muted text-uppercase d-block contact-label">Support & Inquiries Email</small>
+            <strong class="contact-value">fetalbraingroup@gmail.com</strong>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center mb-4">
+          <div class="contact-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+          </div>
+          <div class="ms-3">
+            <small class="text-muted text-uppercase d-block contact-label">Research & Development</small>
+            <strong class="contact-value">Health AI Research Lab, Medical University</strong>
+          </div>
+        </div>
+
+        <hr />
+        <div class="p-3 rounded" style="background: var(--accent-soft); border: 1px solid var(--accent-soft);">
+          <h6 class="fw-bold mb-1" style="color: var(--accent);">Priority Ticket Response</h6>
+          <p class="small text-secondary mb-0">
+            Support tickets submitted by registered physicians are dispatched directly to the engineering lead for priority review (&lt; 2 hours).
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-7">
+    <div class="card grad-border reveal h-100">
+      <div class="card-body p-4 p-md-5">
+        <h3 class="mb-2 fw-bold" style="color: var(--text-primary);">Submit Support Ticket</h3>
+        <p class="text-muted small mb-4">
+          Encountering an issue or request? Fill out the details below to notify our engineering team.
+        </p>
+
+        <form method="post" action="{{ url_for('contact') }}" enctype="multipart/form-data">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Doctor / User Name</label>
+              <input type="text" class="form-control" name="name"
+                     value="{{ session.get('name', '') }}" placeholder="Dr. John Doe" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Email Address</label>
+              <input type="email" class="form-control" name="email"
+                     value="{{ session.get('email', '') }}" placeholder="doctor@hospital.org" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Phone / WhatsApp Number</label>
+              <input type="tel" class="form-control" name="phone" placeholder="+91 9876543210" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Support Category</label>
+              <select class="form-select form-control" name="category">
+                <option value="Technical Issue">Technical Bug / Upload Problem</option>
+                <option value="Model Feedback">Clinical Model Feedback / Edge Case</option>
+                <option value="PACS Integration">PACS / EMR Hospital Integration</option>
+                <option value="General Question">General Inquiry</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Subject / Short Summary</label>
+              <input type="text" class="form-control" name="subject" placeholder="e.g. Issue uploading DICOM converted scan" />
+            </div>
+            <div class="col-12">
+              <label class="form-label">Issue Description / Message</label>
+              <textarea class="form-control" name="message" rows="4"
+                        placeholder="Please describe the issue or inquiry in detail..." required></textarea>
+            </div>
+            <div class="col-12 mt-4">
+              <button type="submit" class="btn btn-accent w-100 py-2">
+                Submit Support Ticket & Notify Email
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
